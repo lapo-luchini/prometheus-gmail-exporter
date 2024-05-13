@@ -139,11 +139,11 @@ def update_gauages_from_gmail(*unused_arguments_needed_for_scheduler):
         try:
             label_info = GMAIL_CLIENT.users().labels().get(id=label['id'], userId='me').execute()
 
-            gauge = get_gauge_for_label(label_info['id'] + '_total', label_info['name']  + ' Total')
-            gauge.set(label_info['threadsTotal'])
+            gauge = get_gauge_for_label('label_total', label_info['name']  + ' total', [ 'id', 'name' ])
+            gauge.labels(label_info['id'], label_info['name']).set(label_info['threadsTotal'])
 
-            gauge = get_gauge_for_label(label_info['id'] + '_unread', label_info['name'] + ' Unread')
-            gauge.set(label_info['threadsUnread'])
+            gauge = get_gauge_for_label('label_unread', label_info['name']  + ' unread', [ 'id', 'name' ])
+            gauge.labels(label_info['id'], label_info['name']).set(label_info['threadsUnread'])
 
             if label['id'] in args.labelsSenderCount:
                 update_sender_gauges_for_label(label_info['id'])
